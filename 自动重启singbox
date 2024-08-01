@@ -1,0 +1,64 @@
+为了使 sing-box 每小时重启一次，你可以将 crontab 任务配置为每小时运行一次。具体步骤如下：
+
+1. 创建重启脚本
+首先，确保你在用户 bing521 的家目录中创建一个重启脚本。
+
+进入用户的家目录：
+
+sh
+cd ~/
+创建一个名为 restart_sing-box.sh 的脚本文件：
+
+sh
+touch restart_sing-box.sh
+编辑 restart_sing-box.sh 文件。你可以使用 vi、nano 或其他你熟悉的文本编辑器。这里我用 vi 举例：
+
+sh
+vi restart_sing-box.sh
+在编辑器中输入以下内容：
+
+sh
+#!/bin/sh
+
+# 停止 sing-box
+pkill -f sing-box
+
+# 等待几秒钟以确保进程完全关闭
+sleep 5
+
+# 启动 sing-box
+nohup /home/bing521/sing-box/sing-box run -c /home/bing521/sing-box/data/config.json > /home/bing521/sing-box/nohup.out 2>&1 &
+保存并退出编辑器：
+
+在 vi 中，按 Esc 键，然后输入 :wq 并按 Enter 键保存并退出。
+如果使用 nano，按 Ctrl+O 保存文件，然后按 Ctrl+X 退出编辑器。
+赋予脚本执行权限：
+
+sh
+chmod +x ~/restart_sing-box.sh
+2. 编辑 Crontab 任务
+打开当前用户的 crontab 编辑界面：
+
+sh
+crontab -e
+添加一行来设定每小时运行一次的任务：
+
+sh
+0 * * * * /home/bing521/restart_sing-box.sh
+这行的含义是每小时的第0分钟执行一次任务。
+
+保存并退出编辑器。
+
+在 vi 中，按 Esc 键，然后输入 :wq 并按 Enter 键保存并退出。
+如果使用 nano，按 Ctrl+O 保存文件，然后按 Ctrl+X 退出编辑器。
+3. 验证 Crontab 任务
+查看当前用户的 crontab 任务，确认刚刚添加的任务是否正确生效：
+
+sh
+crontab -l
+需要看到与以下类似的输出：
+
+sh
+0 * * * * /home/bing521/restart_sing-box.sh
+总结
+通过以上步骤，你就成功地配置了在 FreeBSD 系统上每小时自动重启 sing-box 的任务。如果有任何问题，欢迎继续提问。
